@@ -65,10 +65,13 @@ export default defineComponent({
       // Start updating ball position at regular intervals
       setInterval(updateBallPosition, 1000 / 60); // Update ball position at 60 FPS
 
+      // Set the initial x position of the paddle to center it horizontally
+      const gameBoardWidth = (document.querySelector('.game-board') as HTMLElement).offsetWidth;
+      paddlePosition.x = (gameBoardWidth - paddlePosition.width) / 2;
+
       // Set the initial y position of the paddle to place it at the bottom
       const gameBoardHeight = (document.querySelector('.game-board') as HTMLElement).offsetHeight;
       paddlePosition.y = gameBoardHeight - paddlePosition.height - 30;
-    
     });
 
     // Remove event listener when component is unmounted
