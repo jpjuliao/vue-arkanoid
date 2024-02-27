@@ -1,0 +1,10 @@
+// tsconfig.jest.json
+
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "target": "es6"
+  }
+}

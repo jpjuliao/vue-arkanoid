@@ -62,6 +62,16 @@ export default defineComponent({
       }
     };
 
+    // Function to handle touch movement for paddle movement
+    const handleTouchMove = (event: TouchEvent) => {
+      const gameBoardRect = (document.querySelector('.game-board') as HTMLElement).getBoundingClientRect();
+      const touchX = event.touches[0].clientX - gameBoardRect.left;
+      const paddleWidth = paddlePosition.width;
+      if (touchX >= paddleWidth / 2 && touchX <= gameBoardRect.width - paddleWidth / 2) {
+        paddlePosition.x = touchX - paddleWidth / 2; // Adjust paddle position to center around the touch point
+      }
+    };
+
     // Function to update ball position and handle collisions
     const updateBallPosition = () => {
       // Update ball position based on velocity
@@ -166,6 +176,7 @@ export default defineComponent({
       // Start updating ball position at regular intervals
       setInterval(updateBallPosition, 1000 / 60); // Update ball position at 60 FPS
       window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('touchmove', handleTouchMove);
 
       // Set the initial x position of the paddle to center it horizontally
       const gameBoardWidth = (document.querySelector('.game-board') as HTMLElement).offsetWidth;
@@ -183,6 +194,7 @@ export default defineComponent({
     onUnmounted(() => {
       window.removeEventListener('keydown', handleKeyPress);
       window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('touchmove', handleTouchMove);
     });
 
     return {
