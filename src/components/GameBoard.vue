@@ -46,8 +46,8 @@ export default defineComponent({
         paddlePosition.x += 10;
       }
     };
-
-    // Function to update ball position
+    
+    // Function to update ball position and handle collisions
     const updateBallPosition = () => {
       // Update ball position based on velocity
       ballState.x += velocity.x;
@@ -57,8 +57,12 @@ export default defineComponent({
       if (ballState.x + ballState.radius >= window.innerWidth || ballState.x - ballState.radius <= 0) {
         velocity.x *= -1; // Reverse velocity on collision with side walls
       }
-      if (ballState.y - ballState.radius <= 0 || ballState.y + ballState.radius >= window.innerHeight) {
-        velocity.y *= -1; // Reverse velocity on collision with top or bottom walls
+      if (ballState.y - ballState.radius <= 0) {
+        velocity.y *= -1; // Reverse velocity on collision with top wall
+      } else if (ballState.y + ballState.radius >= window.innerHeight) {
+        // Reset ball position if it collides with bottom wall (game over logic can be added here)
+        ballState.x = 50;
+        ballState.y = 50;
       }
 
       // Check for collision with paddle
@@ -82,6 +86,32 @@ export default defineComponent({
       ) {
         // Ball collided with paddle, reverse its y velocity
         velocity.y *= -1;
+      }
+
+      // Check for collision with bricks
+      for (let i = 0; i < bricks.length; i++) {
+        const brick = bricks[i];
+        const brickBox = {
+          left: brick.x,
+          right: brick.x + brick.width,
+          top: brick.y,
+          bottom: brick.y + brick.height,
+        };
+        if (
+          ballBox.right > brickBox.left &&
+          ballBox.left < brickBox.right &&
+          ballBox.bottom > brickBox.top &&
+          ballBox.top < brickBox.bottom
+        ) {
+          // Ball collided with brick, remove the brick from the array
+          bricks.splice(i, 1);
+          
+          // Reverse ball velocity on collision with brick
+          velocity.y *= -1;
+          
+          // Break the loop after collision with one brick to avoid unnecessary checks
+          break;
+        }
       }
     };
 
