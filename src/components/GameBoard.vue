@@ -41,9 +41,14 @@ export default defineComponent({
     // Function to handle keyboard key press for paddle movement
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'ArrowLeft') {
-        paddlePosition.x -= 10;
+        if (paddlePosition.x > 0) {
+          paddlePosition.x -= 20;
+        }
       } else if (event.key === 'ArrowRight') {
-        paddlePosition.x += 10;
+        const gameBoardWidth = (document.querySelector('.game-board') as HTMLElement).offsetWidth;
+        if (paddlePosition.x < gameBoardWidth - paddlePosition.width) {
+          paddlePosition.x += 20;
+        }
       }
     };
 
