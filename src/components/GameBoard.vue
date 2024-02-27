@@ -3,8 +3,7 @@ import { defineComponent, onMounted, onUnmounted, reactive } from "vue";
 import Paddle from "./Paddle.vue";
 import Ball from "./Ball.vue";
 import Brick from "./Brick.vue";
-import { PaddleProps, BallProps } from "../types";
-
+import { PaddleProps, BallProps, BrickProps } from "../types";
 export default defineComponent({
   components: {
     Paddle,
@@ -35,6 +34,27 @@ export default defineComponent({
       y: 5,
     });
 
+    // Initialize bricks at the top of the game board
+    const bricks: BrickProps[] = [];
+    const brickWidth = 60;
+    const brickHeight = 20;
+    const brickColor = "green";
+    const brickRowCount = 3;
+    const brickColumnCount = Math.floor(window.innerWidth / brickWidth);
+    for (let c = 0; c < brickColumnCount; c++) {
+      for (let r = 0; r < brickRowCount; r++) {
+        const brickX = c * (brickWidth + 10); // Add spacing between bricks
+        const brickY = r * (brickHeight + 10); // Add spacing between bricks
+        bricks.push({
+          x: brickX,
+          y: brickY,
+          width: brickWidth,
+          height: brickHeight,
+          color: brickColor,
+        });
+      }
+    }
+
     // Function to handle keyboard key press for paddle movement
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'ArrowLeft') {
@@ -56,6 +76,29 @@ export default defineComponent({
       }
       if (ballState.y - ballState.radius <= 0 || ballState.y + ballState.radius >= window.innerHeight) {
         velocity.y *= -1; // Reverse velocity on collision with top or bottom walls
+      }
+
+      // Check for collision with paddle
+      const paddleBox = {
+        left: paddlePosition.x,
+        right: paddlePosition.x + paddlePosition.width,
+        top: paddlePosition.y,
+        bottom: paddlePosition.y + paddlePosition.height,
+      };
+      const ballBox = {
+        left: ballState.x - ballState.radius,
+        right: ballState.x + ballState.radius,
+        top: ballState.y - ballState.radius,
+        bottom: ballState.y + ballState.radius,
+      };
+      if (
+        ballBox.right > paddleBox.left &&
+        ballBox.left < paddleBox.right &&
+        ballBox.bottom > paddleBox.top &&
+        ballBox.top < paddleBox.bottom
+      ) {
+        // Ball collided with paddle, reverse its y velocity
+        velocity.y *= -1;
       }
     };
 
@@ -82,11 +125,12 @@ export default defineComponent({
     return {
       paddle: paddlePosition,
       ball: ballState,
-      bricks: [], // Initialize bricks as an empty array for now
+      bricks: bricks,
     };
   },
 });
 </script>
+
 
 <style scoped>
 .game-board {
