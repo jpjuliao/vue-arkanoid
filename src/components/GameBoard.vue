@@ -46,7 +46,7 @@ export default defineComponent({
         paddlePosition.x += 10;
       }
     };
-    
+
     // Function to update ball position and handle collisions
     const updateBallPosition = () => {
       // Update ball position based on velocity
@@ -78,14 +78,23 @@ export default defineComponent({
         top: ballState.y - ballState.radius,
         bottom: ballState.y + ballState.radius,
       };
+
       if (
         ballBox.right > paddleBox.left &&
         ballBox.left < paddleBox.right &&
         ballBox.bottom > paddleBox.top &&
         ballBox.top < paddleBox.bottom
       ) {
-        // Ball collided with paddle, reverse its y velocity
+        // Ball collided with paddle
+
+        // Reverse ball's vertical velocity
         velocity.y *= -1;
+
+        // Adjust ball's horizontal velocity based on collision point with paddle
+        const collisionPoint = ballState.x - paddlePosition.x;
+        const normalizedCollisionPoint = collisionPoint / paddlePosition.width;
+        const angle = normalizedCollisionPoint * Math.PI - Math.PI / 2; // Calculate angle in radians
+        velocity.x = Math.sin(angle) * 5; // Adjust velocity based on angle of collision
       }
 
       // Check for collision with bricks
@@ -105,10 +114,10 @@ export default defineComponent({
         ) {
           // Ball collided with brick, remove the brick from the array
           bricks.splice(i, 1);
-          
+
           // Reverse ball velocity on collision with brick
           velocity.y *= -1;
-          
+
           // Break the loop after collision with one brick to avoid unnecessary checks
           break;
         }
@@ -171,8 +180,10 @@ export default defineComponent({
 <style scoped>
 .game-board {
   position: relative;
-  width: 100vw; /* Set game board width to viewport width */
-  height: 100vh; /* Set game board height to viewport height */
+  width: 100vw;
+  /* Set game board width to viewport width */
+  height: 100vh;
+  /* Set game board height to viewport height */
   overflow: hidden;
 }
 </style>

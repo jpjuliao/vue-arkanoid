@@ -29,5 +29,6 @@ export default defineComponent({
 <style scoped>
 .paddle {
   position: absolute;
+  transition: all .5s;
 }
 </style>
