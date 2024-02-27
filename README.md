@@ -2,6 +2,8 @@
 
 Welcome to Vue Arkanoid, a simple Arkanoid game built with Vue.js!
 
+<a href="https://jpjuliao.github.io/vue-arkanoid/" target="_blank">🔗 Play Game Online</a>
+
 ## Description ℹ️
 
 Vue Arkanoid is a classic arcade game where you control a paddle to bounce a ball and break bricks. The objective is to clear all the bricks from the screen without letting the ball fall off the bottom of the screen.
