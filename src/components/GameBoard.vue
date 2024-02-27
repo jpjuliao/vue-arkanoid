@@ -4,6 +4,7 @@ import Paddle from "./Paddle.vue";
 import Ball from "./Ball.vue";
 import Brick from "./Brick.vue";
 import { PaddleProps, BallProps, BrickProps } from "../types";
+
 export default defineComponent({
   components: {
     Paddle,
@@ -34,26 +35,8 @@ export default defineComponent({
       y: 5,
     });
 
-    // Initialize bricks at the top of the game board
-    const bricks: BrickProps[] = [];
-    const brickWidth = 60;
-    const brickHeight = 20;
-    const brickColor = "green";
-    const brickRowCount = 3;
-    const brickColumnCount = Math.floor(window.innerWidth / brickWidth);
-    for (let c = 0; c < brickColumnCount; c++) {
-      for (let r = 0; r < brickRowCount; r++) {
-        const brickX = c * (brickWidth + 10); // Add spacing between bricks
-        const brickY = r * (brickHeight + 10); // Add spacing between bricks
-        bricks.push({
-          x: brickX,
-          y: brickY,
-          width: brickWidth,
-          height: brickHeight,
-          color: brickColor,
-        });
-      }
-    }
+    // Define reactive state for bricks
+    const bricks = reactive<BrickProps[]>([]);
 
     // Function to handle keyboard key press for paddle movement
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -102,6 +85,27 @@ export default defineComponent({
       }
     };
 
+    // Function to initialize bricks
+    const initBricks = () => {
+      const brickWidth = 80;
+      const brickHeight = 20;
+      const numRows = 3;
+      const numCols = Math.floor(window.innerWidth / (brickWidth + 10)); // Adjusted for gap
+
+      for (let i = 0; i < numRows; i++) {
+        for (let j = 0; j < numCols; j++) {
+          const brick: BrickProps = {
+            x: j * (brickWidth + 10), // Adjusted for gap
+            y: i * (brickHeight + 10), // Adjusted for gap
+            width: brickWidth,
+            height: brickHeight,
+            color: "green",
+          };
+          bricks.push(brick);
+        }
+      }
+    };
+
     // Add event listener for key press when component is mounted
     onMounted(() => {
       window.addEventListener('keydown', handleKeyPress);
@@ -115,6 +119,9 @@ export default defineComponent({
       // Set the initial y position of the paddle to place it at the bottom
       const gameBoardHeight = (document.querySelector('.game-board') as HTMLElement).offsetHeight;
       paddlePosition.y = gameBoardHeight - paddlePosition.height - 30;
+
+      // Initialize bricks
+      initBricks();
     });
 
     // Remove event listener when component is unmounted
@@ -125,12 +132,11 @@ export default defineComponent({
     return {
       paddle: paddlePosition,
       ball: ballState,
-      bricks: bricks,
+      bricks,
     };
   },
 });
 </script>
-
 
 <style scoped>
 .game-board {

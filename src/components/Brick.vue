@@ -1,5 +1,5 @@
 <template>
-  <div v-if="brick" :style="{ left: brick.x + 'px', top: brick.y + 'px', width: brick.width + 'px', height: brick.height + 'px', backgroundColor: brick.color }"></div>
+  <div v-if="brick" class="brick" :style="{ left: brick.x + 'px', top: brick.y + 'px', width: brick.width + 'px', height: brick.height + 'px', backgroundColor: brick.color }"></div>
 </template>
 
 <script lang="ts">
@@ -12,3 +12,9 @@ export default defineComponent({
   }
 });
 </script>
+
+<style scoped>
+.brick {
+  position: absolute;
+}
+</style>
