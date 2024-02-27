@@ -199,7 +199,7 @@ export default defineComponent({
   position: relative;
   width: 100vw;
   /* Set game board width to viewport width */
-  height: 100vh;
+  height: 100dvh;
   /* Set game board height to viewport height */
   overflow: hidden;
 }
