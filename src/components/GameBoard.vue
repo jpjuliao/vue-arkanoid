@@ -1,19 +1,9 @@
-<template>
-  <div ref="gameBoard" class="game-board">
-    <Paddle :paddle="paddle" />
-    <Ball :ball="ball" />
-    <div v-for="(brick, index) in bricks" :key="index">
-      <Brick :brick="brick" />
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, reactive } from "vue";
 import Paddle from "./Paddle.vue";
 import Ball from "./Ball.vue";
 import Brick from "./Brick.vue";
-import { PaddleProps, BallProps, BrickProps } from "../types";
+import { PaddleProps, BallProps } from "../types";
 
 export default defineComponent({
   components: {
@@ -31,14 +21,18 @@ export default defineComponent({
       color: "blue",
     });
 
-    // Define reactive state for ball position and velocity
+    // Define reactive state for ball position
     const ballState = reactive<BallProps>({
       x: 50,
       y: 50,
       radius: 5,
       color: "red",
-      velocityX: 5,
-      velocityY: 5,
+    });
+
+    // Define reactive state for ball velocity
+    const velocity = reactive<{ x: number; y: number }>({
+      x: 5,
+      y: 5,
     });
 
     // Function to handle keyboard key press for paddle movement
@@ -53,18 +47,16 @@ export default defineComponent({
     // Function to update ball position
     const updateBallPosition = () => {
       // Update ball position based on velocity
-      ballState.x += ballState.velocityX;
-      ballState.y += ballState.velocityY;
+      ballState.x += velocity.x;
+      ballState.y += velocity.y;
 
       // Check for collision with walls
       if (ballState.x + ballState.radius >= window.innerWidth || ballState.x - ballState.radius <= 0) {
-        ballState.velocityX *= -1; // Reverse velocity on collision with side walls
+        velocity.x *= -1; // Reverse velocity on collision with side walls
       }
-      if (ballState.y - ballState.radius <= 0) {
-        ballState.velocityY *= -1; // Reverse velocity on collision with top wall
+      if (ballState.y - ballState.radius <= 0 || ballState.y + ballState.radius >= window.innerHeight) {
+        velocity.y *= -1; // Reverse velocity on collision with top or bottom walls
       }
-
-      // You can add more collision logic here, e.g., collision with paddle or bricks
     };
 
     // Add event listener for key press when component is mounted
@@ -93,5 +85,14 @@ export default defineComponent({
   position: relative;
   width: 100vw; /* Set game board width to viewport width */
   height: 100vh; /* Set game board height to viewport height */
+  overflow: hidden;
 }
 </style>
+
+<template>
+  <div ref="gameBoard" class="game-board">
+    <Paddle :paddle="paddle" />
+    <Ball :ball="ball" />
+    <Brick v-for="(brick, index) in bricks" :key="index" :brick="brick" />
+  </div>
+</template>

@@ -12,8 +12,6 @@ export interface BallProps {
   y: number;
   radius: number;
   color: string;
-  velocityX: number;
-  velocityY: number;
 }
 
 export interface BrickProps {
